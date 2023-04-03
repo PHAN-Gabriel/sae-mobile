@@ -34,7 +34,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Application TD3',style: Theme.of(context).textTheme.titleLarge),
+        title: Text('Le p\'tit phanashop',style: Theme.of(context).textTheme.titleLarge),
       ),
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -43,7 +43,7 @@ class _HomeState extends State<Home> {
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem( icon: Icon(Icons.article),
-            label: 'Card1',
+            label: 'Les articles',
           ),
           BottomNavigationBarItem( icon: Icon(Icons.article),
             label: 'Card2',

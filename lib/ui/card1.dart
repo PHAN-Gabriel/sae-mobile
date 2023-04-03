@@ -1,36 +1,71 @@
+
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import '../api/my_api.dart';
 
-import '../detail.dart';
-import '../models/task.dart';
-import '../view_models/task_view_model.dart';
+import '../models/article.dart';
+import '../models/todo.dart';
 
-class Ecran1 extends StatelessWidget{
-  // late permet de ne pas initialiser la variable
-  late List<Task> tasks;  
-  String tags='';
+class Ecran1 extends StatefulWidget{
+  @override
+  State<Ecran1> createState() => _Ecran1State();
+}
+
+class _Ecran1State extends State<Ecran1> {
+  late Future<List<Article>> futureTodo;
+  MyAPI myAPI =MyAPI();
+
+  @override
+  void initState(){
+    super.initState();
+    futureTodo = myAPI.getArticles();
+  }
   @override
   Widget build(BuildContext context) {
-    //watch permet de s'abonner au changement de la liste 
-    tasks = context.watch<TaskViewModel>().liste; 
-    
-    return ListView.builder(
-    itemCount: tasks.length,
-    itemBuilder:(context,index)=> Card(
-      elevation: 6,
-      margin: const EdgeInsets.all(10),
-      child: ListTile(
-        leading: CircleAvatar(child: Text(tasks[index].id.toString()),backgroundColor: Colors.lightBlue,),
-        title: Text(tasks[index].title),
-        subtitle: Text(tasks[index].tags.join(" ")),
-        onTap: (){
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => Detail(task: tasks[index]),
-              )
-              );
-            },
-      ),
-    ));
+    return FutureBuilder(
+        future: futureTodo,
+        builder: (context,snapshot){
+          if (snapshot.hasData){
+            return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // nombre de colonnes
+                ),
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    elevation: 6,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Image.network(
+                            snapshot.data?[index].image ?? "",
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            snapshot.data?[index].title ?? "",
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "${snapshot.data?[index].price.toString()} €" ?? "",
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                });
+          }
+          else if (snapshot.hasError){
+            return Text('${snapshot.error}');
+          }
+          else{
+            return const Center(child: CircularProgressIndicator(),);
+          }
+        });
   }
-
 }

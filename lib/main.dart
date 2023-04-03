@@ -7,9 +7,9 @@ import 'ui/home.dart';
 import 'view_models/task_view_model.dart';
 
 void main() {
-  runApp(MyTD3());
+  runApp(MyShop());
 }
-class MyTD3 extends StatelessWidget{
+class MyShop extends StatelessWidget{
   @override
   Widget build(BuildContext context){
     return MultiProvider( 
@@ -33,7 +33,7 @@ class MyTD3 extends StatelessWidget{
         builder: (context,SettingViewModel notifier,child){
           return MaterialApp(
               theme: notifier.isDark ? MyTheme.dark():MyTheme.light(),
-              title: 'TD2',
+              title: 'My Shop',
               home: Home()
           );
         },

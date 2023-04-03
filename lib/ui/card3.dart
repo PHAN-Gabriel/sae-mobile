@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../api/my_api.dart';
 
+import '../models/article.dart';
 import '../models/todo.dart';
 
 class Ecran3 extends StatefulWidget{
@@ -10,13 +11,13 @@ class Ecran3 extends StatefulWidget{
 }
 
 class _Ecran3State extends State<Ecran3> {
-  late Future<List<Todo>> futureTodo;
+  late Future<List<Article>> futureTodo;
   MyAPI myAPI =MyAPI();
 
   @override
   void initState(){
     super.initState();
-    futureTodo = myAPI.getTodos();
+    futureTodo = myAPI.getArticles();
   }
   @override
   Widget build(BuildContext context) {
@@ -28,12 +29,11 @@ class _Ecran3State extends State<Ecran3> {
                 itemCount: snapshot.data?.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    elevation: 6,
+                    elevation: 1,
                     margin: const EdgeInsets.all(10),
                     child: ListTile(
-                      leading: CircleAvatar(backgroundColor: Colors.lightBlue,child: Text(snapshot.data?[index].id.toString()??'0'),),
+                      leading: Image.network(snapshot.data?[index].image??""),
                       title: Text(snapshot.data?[index].title??""),
-                      trailing: Checkbox(value: snapshot.data?[index].completed, onChanged: (bool? value) {  },),
                     ),
                   );
                 });

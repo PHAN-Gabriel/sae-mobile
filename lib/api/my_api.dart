@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import '../models/article.dart';
 import '../models/todo.dart';
 import 'package:http/http.dart' as http;
 
@@ -10,7 +11,7 @@ import '../models/task.dart';
 class MyAPI{
 
   Future<List<Task>> getTasks() async{
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     debugPrint("avant load");
     final dataString = await _loadAsset('assets/mydata/tasks.json');
     debugPrint("apres load");
@@ -30,21 +31,21 @@ class MyAPI{
     return rootBundle.loadString(path);
   }
 
-  Future<List<Todo>> getTodos() async{
-    final response = await http.get(Uri.parse('https://jsonplaceholder.typicode.com/todos'));
+  Future<List<Article>> getArticles() async{
+    final response = await http.get(Uri.parse('http://fakestoreapi.com/products'));
     if (response.statusCode == 200){
       debugPrint("200");
       final List<dynamic> json = jsonDecode(response.body);
       debugPrint("apres jsonDecode");
-      final todos = <Todo>[];
+      final articles = <Article>[];
       json.forEach((element) {
-        todos.add(Todo.fromJson(element));
+        articles.add(Article.fromJson(element));
       });
       debugPrint("avant return");
-      return todos;
+      return articles;
     }else{
       debugPrint("pb connection");
-      throw Exception('Failed to load todos');
+      throw Exception('Failed to load articles');
     }
   }
 }
