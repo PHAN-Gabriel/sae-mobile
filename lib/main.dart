@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'introductionPage.dart';
 import 'ui/my_theme.dart';
 import 'view_models/setting_view_model.dart';
 import 'ui/home.dart';
@@ -29,12 +30,12 @@ class MyShop extends StatelessWidget{
             } 
           )
         ],
-      child: Consumer<SettingViewModel>( //Consumer dans Flutter permet de s'abonner au changement de la VueModele
+      child: Consumer<SettingViewModel>(
         builder: (context,SettingViewModel notifier,child){
           return MaterialApp(
               theme: notifier.isDark ? MyTheme.dark():MyTheme.light(),
               title: 'My Shop',
-              home: Home()
+              home: IntroductionPage()
           );
         },
       ),
