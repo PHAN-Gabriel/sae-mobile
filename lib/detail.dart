@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
 
+import 'models/article.dart';
 import 'models/task.dart';
 
 class Detail extends StatelessWidget{
-  final Task task;
+  final Article article;
   
-  const Detail({required this.task});
+  const Detail({required this.article});
   
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Task ${task.title} detail'),
+        title: Text('Task ${article.title} detail'),
       ),
       body: Container(
         child: Center(
           child: Column(
             children: [
-              Text('id: ${task.id}'),
-              Text('title: ${task.title}'),
-              Text('description: ${task.description}'),
-              Text('tags: ${task.tags.join(" ")}'),
-              Text('difficulty: ${task.difficulty}'),
-              Text('nb hours: ${task.nbhours}')
+              Text(article.title,
+                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold,),
+              ),
+              Image.network(
+                article.image,
+                fit: BoxFit.cover,
+                width: 200,
+              ),
+              Text("${article.price} €",
+                style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold,),
+              ),
+              Text(article.description),
             ],
           ),
         ),
