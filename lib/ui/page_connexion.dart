@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'introductionPage.dart';
 import 'page_inscription.dart';
@@ -15,6 +16,25 @@ class _PageConnexionState extends State<PageConnexion> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _verifierSiDejaConnecte();
+  }
+
+  Future<void> _verifierSiDejaConnecte() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('user_id');
+    if (userId != null && userId.isNotEmpty) {
+      final user = await FirebaseAuth.instance.currentUser;
+      if (user?.uid == userId) {
+        // On est déjà connecté, on skip la page de connexion
+        _gotoPageIntroduction();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,20 +64,41 @@ class _PageConnexionState extends State<PageConnexion> {
                 obscureText: true,
               ),
               const SizedBox(height: 16.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value!;
+                      });
+                    },
+                  ),
+                  const Text('Se souvenir de moi'),
+                ]
+              ),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 child: const Text('Se connecter'),
                 onPressed: () async {
-                  String messageErreur = 'Erreur inconnue'; // déclaration et initialisation de la variable messageErreur
+                  String messageErreur = 'Erreur inconnue';
                   try {
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                    final userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
                       email: _emailController.text,
                       password: _passwordController.text,
                     );
 
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const IntroductionPage()),
-                    );
+                    if (_rememberMe) {
+                      // Si on veut se souvenir du fait que l'utilisateur ne veuille pas retaper son login pour se reconnecter
+                      // On stocke son uuid
+                      if (_rememberMe) {
+                        final prefs = await SharedPreferences.getInstance();
+                        prefs.setString('user_id', userCredential.user?.uid ?? '');
+                      }
+                    }
+
+                    _gotoPageIntroduction();
                   } on FirebaseAuthException catch (e) {
                     String messageErreur = '';
 
@@ -76,7 +117,7 @@ class _PageConnexionState extends State<PageConnexion> {
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: const Text('Erreur lors de la connexion'),
-                          content: Text(messageErreur), // utilisation de la variable messageErreur
+                          content: Text(messageErreur),
                           actions: <Widget>[
                             TextButton(
                               child: const Text('OK'),
@@ -107,6 +148,13 @@ class _PageConnexionState extends State<PageConnexion> {
           ),
         ),
       ),
+    );
+  }
+
+  void _gotoPageIntroduction() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const IntroductionPage()),
     );
   }
 }
