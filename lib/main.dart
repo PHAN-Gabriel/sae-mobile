@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
-import 'introductionPage.dart';
 import 'ui/my_theme.dart';
+import 'ui/page_connexion.dart';
 import 'view_models/setting_view_model.dart';
-import 'ui/home.dart';
 import 'view_models/task_view_model.dart';
 
 void main() async {
@@ -40,7 +39,7 @@ class MyShop extends StatelessWidget{
           return MaterialApp(
               theme: notifier.isDark ? MyTheme.dark():MyTheme.light(),
               title: 'My Shop',
-              home: IntroductionPage()
+              home: PageConnexion()
           );
         },
       ),
