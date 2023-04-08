@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import '../models/article.dart';
@@ -32,20 +33,32 @@ class MyAPI{
   }
 
   Future<List<Article>> getArticles() async{
-    final response = await http.get(Uri.parse('http://fakestoreapi.com/products'));
-    if (response.statusCode == 200){
-      debugPrint("200");
-      final List<dynamic> json = jsonDecode(response.body);
-      debugPrint("apres jsonDecode");
-      final articles = <Article>[];
-      json.forEach((element) {
-        articles.add(Article.fromJson(element));
+    List<Article> articles = [];
+
+    await FirebaseFirestore.instance
+        .collection("articles")
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((document) {
+        Article article = Article.fromJson(document.data());
+        articles.add(article);
       });
-      debugPrint("avant return");
-      return articles;
-    }else{
-      debugPrint("pb connection");
-      throw Exception('Failed to load articles');
+    });
+
+    return articles;
+  }
+
+  // A utiliser pour initaliser les données
+  void ajouterArticlesDansFireBase(List<Article> articles) {
+    for(Article article in articles) {
+      FirebaseFirestore.instance.collection("articles").add({
+        "id": article.id,
+        "title": article.title,
+        "category": article.category,
+        "description": article.description,
+        "price": article.price,
+        "image": article.image
+      });
     }
   }
 }

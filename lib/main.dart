@@ -1,13 +1,18 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'firebase_options.dart';
 import 'introductionPage.dart';
 import 'ui/my_theme.dart';
 import 'view_models/setting_view_model.dart';
 import 'ui/home.dart';
 import 'view_models/task_view_model.dart';
 
-void main() {
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(MyShop());
 }
 class MyShop extends StatelessWidget{
