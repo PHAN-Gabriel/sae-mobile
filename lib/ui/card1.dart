@@ -2,9 +2,8 @@
 import 'package:flutter/material.dart';
 import '../api/my_api.dart';
 
-import '../detail.dart';
+import 'detail.dart';
 import '../models/article.dart';
-import '../models/todo.dart';
 
 class Ecran1 extends StatefulWidget{
   @override
@@ -12,19 +11,19 @@ class Ecran1 extends StatefulWidget{
 }
 
 class _Ecran1State extends State<Ecran1> {
-  late Future<List<Article>> futureTodo;
+  late Future<List<Article>> futureArticle;
   MyAPI myAPI = MyAPI();
 
   @override
   void initState() {
     super.initState();
-    futureTodo = myAPI.getArticles();
+    futureArticle = myAPI.getArticles();
   }
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: futureTodo,
+      future: futureArticle,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
           return GridView.builder(
@@ -36,7 +35,7 @@ class _Ecran1State extends State<Ecran1> {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(
-                      builder: (context) => Detail(article: snapshot.data![index]),
+                    builder: (context) => Detail(article: snapshot.data![index]),
                   ));
                 },
                 child: Card(
@@ -46,7 +45,6 @@ class _Ecran1State extends State<Ecran1> {
                       Expanded(
                         child: Image.network(
                           snapshot.data?[index].image ?? "",
-                          fit: BoxFit.cover,
                         ),
                       ),
                       Padding(
@@ -56,13 +54,29 @@ class _Ecran1State extends State<Ecran1> {
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "${snapshot.data?[index].price.toString()} €" ?? "",
-                          style: const TextStyle(fontSize: 16),
-                        ),
-                      ),
+                      Row (
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              "${snapshot.data?[index].price.toString()} €" ?? "",
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              snapshot.data![index].getEstEnFavori() ? Icons.favorite : Icons.favorite_border,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                snapshot.data![index].changerEstEnFavori();
+                              });
+                            },
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
