@@ -5,10 +5,10 @@ import 'package:provider/provider.dart';
 import '../models/task.dart';
 import '../view_models/task_view_model.dart';
 import 'add_task.dart';
+import 'ecran_panier.dart';
+import 'ecran_favoris.dart';
 import 'settings.dart';
-import 'card1.dart';
-import 'card2.dart';
-import 'card3.dart';
+import 'ecran_articles.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -18,9 +18,9 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int _selectedIndex = 0;
   static List<Widget> pages = <Widget>[
-    Ecran1(),
-    Ecran2(),
-    Ecran3(),
+    EcranArticles(),
+    EcranFavoris(),
+    EcranPanier(),
     EcranSettings(),
   ];
 
@@ -42,16 +42,20 @@ class _HomeState extends State<Home> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem( icon: Icon(Icons.article),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.article),
             label: 'Les articles',
           ),
-          BottomNavigationBarItem( icon: Icon(Icons.article),
-            label: 'Card2',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.article),
+            label: 'Vos favoris',
           ),
-          BottomNavigationBarItem( icon: Icon(Icons.article),
-            label: 'Card3',
+          BottomNavigationBarItem(
+            icon: Icon(Icons.article),
+            label: 'Votre panier',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.settings),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
             label: 'Settings'),
         ], ),
         floatingActionButton: _selectedIndex==0?

@@ -1,41 +1,45 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../api/my_api.dart';
 
 import 'detail.dart';
 import '../models/article.dart';
 
-class Ecran1 extends StatefulWidget{
+class EcranFavoris extends StatefulWidget{
   @override
-  State<Ecran1> createState() => _Ecran1State();
+  State<EcranFavoris> createState() => _EcranFavorisState();
 }
 
-class _Ecran1State extends State<Ecran1> {
-  late Future<List<Article>> futureArticle;
-  MyAPI myAPI = MyAPI();
-
-  @override
-  void initState() {
-    super.initState();
-    futureArticle = myAPI.getArticles();
-  }
-
+class _EcranFavorisState extends State<EcranFavoris> {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: futureArticle,
+      future: MyAPI.getArticlesWithFavorisAndCommandeOfCurrentUser(
+          afficherSeulementFavoris: true,
+          afficherSeulementEstCommande: false
+      ),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          List<Article>? articles = snapshot.data;
+
+          if (articles!.isEmpty) {
+            return const Center(
+              child: Text('Vous n\'avez aucun articles en favori'),
+            );
+          }
+
           return GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2, // nombre de colonnes
             ),
-            itemCount: snapshot.data?.length,
+            itemCount: articles!.length,
             itemBuilder: (context, index) {
               return GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(
-                    builder: (context) => Detail(article: snapshot.data![index]),
+                    builder: (context) => Detail(article: articles[index]),
                   ));
                 },
                 child: Card(
@@ -44,13 +48,13 @@ class _Ecran1State extends State<Ecran1> {
                     children: [
                       Expanded(
                         child: Image.network(
-                          snapshot.data?[index].image ?? "",
+                          articles[index].image ?? "",
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          snapshot.data?[index].title ?? "",
+                          articles[index].title ?? "",
                           style: const TextStyle(fontSize: 16),
                         ),
                       ),
@@ -60,18 +64,18 @@ class _Ecran1State extends State<Ecran1> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "${snapshot.data?[index].price.toString()} €" ?? "",
+                              "${articles[index].price.toString()} €" ?? "",
                               style: const TextStyle(fontSize: 16),
                             ),
                           ),
                           IconButton(
                             icon: Icon(
-                              snapshot.data![index].getEstEnFavori() ? Icons.favorite : Icons.favorite_border,
+                              articles[index].getEstEnFavori() ? Icons.favorite : Icons.favorite_border,
                               color: Colors.red,
                             ),
                             onPressed: () {
                               setState(() {
-                                snapshot.data![index].changerEstEnFavori();
+                                articles[index].changerEstEnFavori();
                               });
                             },
                           ),
