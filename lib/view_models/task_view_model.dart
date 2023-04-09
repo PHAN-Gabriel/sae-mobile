@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../models/task.dart';
 
-class TaskViewModel extends ChangeNotifier{
+/* class TaskViewModel extends ChangeNotifier{
   late List<Task> liste; // late permet de ne pas initialiser la variable
   TaskViewModel(){
     liste=[];
@@ -14,4 +13,4 @@ class TaskViewModel extends ChangeNotifier{
     liste = Task.generateTask(50);
     notifyListeners(); // permet de notifier les listeners
   }
-}
+} */

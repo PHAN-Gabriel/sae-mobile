@@ -6,21 +6,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import '../models/article.dart';
 
-import '../models/task.dart';
-
 class MyAPI{
-  // A utiliser pour initaliser les données
   static void ajouterArticlesDansFireBase(List<Article> articles) {
     for(Article article in articles) {
-      FirebaseFirestore.instance.collection("articles").add({
-        "id": article.id,
-        "title": article.title,
-        "category": article.category,
-        "description": article.description,
-        "price": article.price,
-        "image": article.image
-      });
+      ajouterArticleDansFireBase(article);
     }
+  }
+
+  static void ajouterArticleDansFireBase(Article article) {
+    FirebaseFirestore.instance.collection("articles").add({
+      "id": article.id,
+      "title": article.title,
+      "category": article.category,
+      "description": article.description,
+      "price": article.price,
+      "image": article.image
+    });
   }
 
   static Future<List<Article>> getArticlesWithFavorisAndCommandeOfCurrentUser({required bool afficherSeulementFavoris, required bool afficherSeulementEstCommande}) async{
@@ -49,15 +50,16 @@ class MyAPI{
         .collection("articles")
         .get()
         .then((querySnapshot) {
-      querySnapshot.docs.forEach((document) {
-        Map<String, dynamic> json = document.data();
-        json.addAll({'favori': idArticlesFavoris.contains(document.data()['id']) });
-        json.addAll({'commande': idArticlesCommandes.contains(document.data()['id']) });
-        Article article = Article.fromJson(json);
-        articles.add(article);
+            querySnapshot.docs.forEach((document) {
+              Map<String, dynamic> json = document.data();
+              json.addAll({'favori': idArticlesFavoris.contains(document.data()['id']) });
+              json.addAll({'commande': idArticlesCommandes.contains(document.data()['id']) });
+              Article article = Article.fromJson(json);
+              articles.add(article);
       });
     });
 
+    articles.sort((a, b) => a.id.compareTo(b.id));
     return articles.where((article) => !(afficherSeulementEstCommande || afficherSeulementFavoris) || (afficherSeulementFavoris && article.getEstEnFavori()) || (afficherSeulementEstCommande && article.getEstCommande())).toList();
   }
 
@@ -141,5 +143,22 @@ class MyAPI{
         .where('idUser', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
         .where('estPaye', isEqualTo: false)
         .get();
+  }
+
+  static Future<int> getMaxIdArticle() async {
+    int id = 0;
+
+    final QuerySnapshot<Map<String, dynamic>> idQuery = await FirebaseFirestore.instance
+        .collection('articles')
+        .orderBy('id', descending: true)
+        .limit(1)
+        .get();
+
+    if (idQuery.docs.isNotEmpty) {
+      DocumentSnapshot<Map<String, dynamic>> docSnapshot = await idQuery.docs.first.reference.get();
+      id = docSnapshot.data()!['id'];
+    }
+
+    return id;
   }
 }

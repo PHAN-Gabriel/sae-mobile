@@ -26,13 +26,13 @@ class MyShop extends StatelessWidget{
               return settingViewModel;
             },
           ),
-          ChangeNotifierProvider(
+          /* ChangeNotifierProvider(
             create:(_){
               TaskViewModel taskViewModel = TaskViewModel();
               taskViewModel.generateTasks();
               return taskViewModel;
             } 
-          )
+          ) */
         ],
       child: Consumer<SettingViewModel>(
         builder: (context,SettingViewModel notifier,child){

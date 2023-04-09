@@ -1,9 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:td2_2223/ui/page_connexion.dart';
 
-import '../models/task.dart';
-import '../view_models/task_view_model.dart';
+import '../api/my_api.dart';
+import '../models/article.dart';
 import 'add_task.dart';
 import 'ecran_panier.dart';
 import 'ecran_favoris.dart';
@@ -34,7 +34,16 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Le p\'tit phanashop',style: Theme.of(context).textTheme.titleLarge),
+        leading: IconButton(
+            icon: const Icon(Icons.power_settings_new),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const PageConnexion()),
+              );
+            },
+        ),
+        title: Text('Le p\'tit phanashop', style: Theme.of(context).textTheme.titleLarge),
       ),
       body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -56,24 +65,33 @@ class _HomeState extends State<Home> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
-            label: 'Settings'),
-        ], ),
-        floatingActionButton: _selectedIndex==0?
-          // un button qui permet d'ajouter une tache
-          FloatingActionButton( // FloatingActionButton est un bouton qui flotte au dessus de l'ecran
-            onPressed: (){
-              // debugPrint ('Pressed');
-              // // create a new task using newTask() in Task and add it to the list using addTask() in TaskViewModel
-              // context.read<TaskViewModel>().addTask(Task.newTask()); 
-              Navigator.push(context, MaterialPageRoute(
-                builder: (context) => AddTask(),
-              )
-              );             
-            },
-            child: const Icon(Icons.add),)
-          :
-          const SizedBox.shrink(),
+            label: 'Settings',
+          ),
+        ],
+      ),
+      floatingActionButton: buildFloatingActionButton(),
     );
   }
 
+  Widget buildFloatingActionButton() {
+    if (_selectedIndex == 0) {
+      return FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => AddArticle()));
+        },
+        child: const Icon(Icons.add),
+      );
+    } else if (_selectedIndex == 2) {
+      return Container(
+        decoration: BoxDecoration(
+          color: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        padding: const EdgeInsets.all(8),
+        child: Text('Commander', style: Theme.of(context).textTheme.titleLarge),
+      );
+    }
+    return const SizedBox.shrink();
+  }
 }
+

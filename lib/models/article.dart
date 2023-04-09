@@ -56,5 +56,18 @@ class Article {
 
     _estCommande ? MyAPI.ajouterDansPanierNonPayeOfCurrentUser(this) : MyAPI.retirerDuPanierNonPayeOfCurrentUser(this);
   }
+
+  static Future<Article> newArticle({required String title, required double price, required String description, required String category, required String image}) async {
+    int id = await MyAPI.getMaxIdArticle();
+
+    return Article(
+      id: id + 1,
+      title: title,
+      price: price,
+      description: description,
+      category: category,
+      image: image
+    );
+  }
 }
 

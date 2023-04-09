@@ -40,6 +40,7 @@ class _PageConnexionState extends State<PageConnexion> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Connexion'),
       ),
       body: Form(
@@ -92,9 +93,11 @@ class _PageConnexionState extends State<PageConnexion> {
                     if (_rememberMe) {
                       // Si on veut se souvenir du fait que l'utilisateur ne veuille pas retaper son login pour se reconnecter
                       // On stocke son uuid
+                      final prefs = await SharedPreferences.getInstance();
                       if (_rememberMe) {
-                        final prefs = await SharedPreferences.getInstance();
                         prefs.setString('user_id', userCredential.user?.uid ?? '');
+                      } else {
+                        prefs.remove('user_id');
                       }
                     }
 
