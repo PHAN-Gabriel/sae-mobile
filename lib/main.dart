@@ -6,7 +6,6 @@ import 'firebase_options.dart';
 import 'ui/my_theme.dart';
 import 'ui/page_connexion.dart';
 import 'view_models/setting_view_model.dart';
-import 'view_models/task_view_model.dart';
 
 void main() async {
   await Firebase.initializeApp(
@@ -26,13 +25,6 @@ class MyShop extends StatelessWidget{
               return settingViewModel;
             },
           ),
-          /* ChangeNotifierProvider(
-            create:(_){
-              TaskViewModel taskViewModel = TaskViewModel();
-              taskViewModel.generateTasks();
-              return taskViewModel;
-            } 
-          ) */
         ],
       child: Consumer<SettingViewModel>(
         builder: (context,SettingViewModel notifier,child){
