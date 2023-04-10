@@ -47,9 +47,15 @@ class _PageHistoriqueState extends State<PageHistorique> {
                       itemBuilder: (BuildContext context, int index) {
                         double prixTotal = articles[index].fold(0, (previousValue, element) => previousValue + element.price);
                         return Card(
-                            elevation: 2, // Ajouter l'élévation ici
-                            child:  ListTile(
+                            child: ExpansionTile(
                               title: Text('Panier ${index + 1} : ${prixTotal.toStringAsFixed(2)}€'),
+                              children: articles[index].map((article) => ListTile(
+                                  leading: Image.network(
+                                    article.image ?? "",
+                                  ),
+                                  title: Text(article.title),
+                                  subtitle: Text(article.getPriceString()),
+                                )).toList(),
                             )
                         );
                       },
