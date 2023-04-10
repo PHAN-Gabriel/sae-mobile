@@ -31,14 +31,14 @@ class _DetailState extends State<Detail> {
                   fit: BoxFit.cover,
                   width: 200,
                 ),
-                Text("${widget.article.price} €",
+                Text(widget.article.getPriceString(),
                   style: const TextStyle(fontSize: 28, fontWeight: FontWeight.bold,),
                 ),
                 Text(widget.article.description),
                 IconButton(
                   icon: Icon(
                     size: 50,
-                    widget.article.getEstCommande() ? Icons.shopping_cart : Icons.shopping_cart_outlined,
+                    widget.article.getEstCommande() ? Icons.remove_shopping_cart_outlined : Icons.add_shopping_cart,
                     color: Colors.white,
                   ),
                   onPressed: () {

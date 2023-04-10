@@ -76,6 +76,7 @@ class _AddArticleState extends State<AddArticle> {
                         return null;
                       }
                   ),
+                  const SizedBox(height: 16.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       textStyle: Theme.of(context).textTheme.button,

@@ -137,6 +137,18 @@ class MyAPI{
     }
   }
 
+  static Future<void> fairePayerPanierNonPayeOfCurrentUser() async {
+    // On récupère le panier non payé de l'utilisateur
+    final QuerySnapshot<Map<String, dynamic>> panierQuery = await getArticlesDuPanierNonPayeOfCurrentUser();
+
+    if (panierQuery.docs.isNotEmpty) {
+      final DocumentReference<Map<String, dynamic>> panier = panierQuery.docs.first.reference;
+      await panier.update({
+        'estPaye': true,
+      });
+    }
+  }
+
   static Future<QuerySnapshot<Map<String, dynamic>>> getArticlesDuPanierNonPayeOfCurrentUser() {
     return FirebaseFirestore.instance
         .collection('paniers')

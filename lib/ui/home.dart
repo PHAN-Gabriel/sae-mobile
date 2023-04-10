@@ -1,10 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:td2_2223/ui/page_connexion.dart';
+import 'package:td2_2223/ui/page_payer.dart';
 
 import '../api/my_api.dart';
 import '../models/article.dart';
-import 'add_task.dart';
+import 'add_article.dart';
 import 'ecran_panier.dart';
 import 'ecran_favoris.dart';
 import 'settings.dart';
@@ -82,13 +83,11 @@ class _HomeState extends State<Home> {
         child: const Icon(Icons.add),
       );
     } else if (_selectedIndex == 2) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        padding: const EdgeInsets.all(8),
-        child: Text('Commander', style: Theme.of(context).textTheme.titleLarge),
+      return FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PagePayer()));
+        },
+        child: const Icon(Icons.shopping_cart_outlined),
       );
     }
     return const SizedBox.shrink();

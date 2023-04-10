@@ -69,5 +69,9 @@ class Article {
       image: image
     );
   }
+
+  String getPriceString() {
+    return '${price.toStringAsFixed(2)}€';
+  }
 }
 

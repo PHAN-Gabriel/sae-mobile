@@ -64,7 +64,7 @@ class _EcranFavorisState extends State<EcranFavoris> {
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              "${articles[index].price.toString()} €" ?? "",
+                              articles[index].getPriceString() ?? "",
                               style: const TextStyle(fontSize: 16),
                             ),
                           ),
