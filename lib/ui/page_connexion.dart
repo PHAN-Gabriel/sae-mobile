@@ -25,8 +25,8 @@ class _PageConnexionState extends State<PageConnexion> {
   }
 
   Future<void> _verifierSiDejaConnecte() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('user_id');
+    final sharedPreferences = await SharedPreferences.getInstance();
+    final userId = sharedPreferences.getString('user_id');
     if (userId != null && userId.isNotEmpty) {
       final user = await FirebaseAuth.instance.currentUser;
       if (user?.uid == userId) {
@@ -93,11 +93,11 @@ class _PageConnexionState extends State<PageConnexion> {
                     if (_rememberMe) {
                       // Si on veut se souvenir du fait que l'utilisateur ne veuille pas retaper son login pour se reconnecter
                       // On stocke son uuid
-                      final prefs = await SharedPreferences.getInstance();
+                      final sharedPreferences = await SharedPreferences.getInstance();
                       if (_rememberMe) {
-                        prefs.setString('user_id', userCredential.user?.uid ?? '');
+                        sharedPreferences.setString('user_id', userCredential.user?.uid ?? '');
                       } else {
-                        prefs.remove('user_id');
+                        sharedPreferences.remove('user_id');
                       }
                     }
 

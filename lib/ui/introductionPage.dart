@@ -27,9 +27,9 @@ class IntroductionPageState extends State<IntroductionPage> {
   }
 
   void _verifierEtFaireSkipIntroduction() async {
-    final prefs = await SharedPreferences.getInstance();
+    final sharedPreferences = await SharedPreferences.getInstance();
 
-    _skipIntroduction = prefs.getBool('skipIntroduction') ?? false;
+    _skipIntroduction = sharedPreferences.getBool('skipIntroduction') ?? false;
 
     if (_skipIntroduction) {
       gotoPageAccueil();
@@ -37,8 +37,8 @@ class IntroductionPageState extends State<IntroductionPage> {
   }
 
   void _sauvegarderEtatSkipIntruction(bool value) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('skipIntroduction', value);
+    final sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setBool('skipIntroduction', value);
   }
 
   @override

@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:td2_2223/ui/page_connexion.dart';
 import 'package:td2_2223/ui/page_payer.dart';
 
@@ -39,7 +40,9 @@ class _HomeState extends State<Home> {
       appBar: AppBar(
         leading: IconButton(
             icon: const Icon(Icons.power_settings_new),
-            onPressed: () {
+            onPressed: () async {
+              final sharedPreferences = await SharedPreferences.getInstance();
+              sharedPreferences.remove('user_id');
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => const PageConnexion()),
