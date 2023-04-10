@@ -30,7 +30,7 @@ class MyAPI{
     List<int> idArticlesCommandes = [];
 
     // On récupère les id des articles commandés
-    QuerySnapshot<Map<String, dynamic>> paniersQuery = await getArticlesDuPanierNonPayeOfCurrentUser();
+    QuerySnapshot<Map<String, dynamic>> paniersQuery = await getArticlesPaniersOfCurrentUser(false);
 
     if (paniersQuery.docs.isNotEmpty) {
       DocumentSnapshot<Map<String, dynamic>> docSnapshot = await paniersQuery.docs.first.reference.get();
@@ -105,7 +105,7 @@ class MyAPI{
 
   static Future<void> ajouterDansPanierNonPayeOfCurrentUser(Article article) async {
     // On récupère, s'il y en a, un panier non payé de l'utilisateur pour vérifier s'il existe déjà
-    final QuerySnapshot<Map<String, dynamic>> panierQuery = await getArticlesDuPanierNonPayeOfCurrentUser();
+    final QuerySnapshot<Map<String, dynamic>> panierQuery = await getArticlesPaniersOfCurrentUser(false);
 
     final DocumentReference<Map<String, dynamic>> panier;
     if (panierQuery.docs.isEmpty) {
@@ -127,7 +127,7 @@ class MyAPI{
 
   static Future<void> retirerDuPanierNonPayeOfCurrentUser(Article article) async {
     // On récupère le panier non payé de l'utilisateur
-    final QuerySnapshot<Map<String, dynamic>> panierQuery = await getArticlesDuPanierNonPayeOfCurrentUser();
+    final QuerySnapshot<Map<String, dynamic>> panierQuery = await getArticlesPaniersOfCurrentUser(false);
 
     if (panierQuery.docs.isNotEmpty) {
       final DocumentReference<Map<String, dynamic>> panier = panierQuery.docs.first.reference;
@@ -139,7 +139,7 @@ class MyAPI{
 
   static Future<void> fairePayerPanierNonPayeOfCurrentUser() async {
     // On récupère le panier non payé de l'utilisateur
-    final QuerySnapshot<Map<String, dynamic>> panierQuery = await getArticlesDuPanierNonPayeOfCurrentUser();
+    final QuerySnapshot<Map<String, dynamic>> panierQuery = await getArticlesPaniersOfCurrentUser(false);
 
     if (panierQuery.docs.isNotEmpty) {
       final DocumentReference<Map<String, dynamic>> panier = panierQuery.docs.first.reference;
@@ -149,11 +149,11 @@ class MyAPI{
     }
   }
 
-  static Future<QuerySnapshot<Map<String, dynamic>>> getArticlesDuPanierNonPayeOfCurrentUser() {
+  static Future<QuerySnapshot<Map<String, dynamic>>> getArticlesPaniersOfCurrentUser(bool estPaye) {
     return FirebaseFirestore.instance
         .collection('paniers')
         .where('idUser', isEqualTo: FirebaseAuth.instance.currentUser?.uid)
-        .where('estPaye', isEqualTo: false)
+        .where('estPaye', isEqualTo: estPaye)
         .get();
   }
 
@@ -172,5 +172,37 @@ class MyAPI{
     }
 
     return id;
+  }
+
+  static Future<List<List<Article>>> getHistoriqueOfCurrentUser() async {
+    List<List<Article>> historiqueArticles = [];
+
+    List<Article> articles = [];
+
+    // On génère la liste des articles
+    await FirebaseFirestore.instance
+        .collection("articles")
+        .get()
+        .then((querySnapshot) {
+      querySnapshot.docs.forEach((document) {
+        Map<String, dynamic> json = document.data();
+        Article article = Article.fromJson(json);
+        articles.add(article);
+      });
+    });
+
+    QuerySnapshot<Map<String, dynamic>> paniersQuery = await getArticlesPaniersOfCurrentUser(true);
+
+    if (paniersQuery.docs.isNotEmpty) {
+      for (DocumentSnapshot<Map<String, dynamic>> docSnapshot in paniersQuery.docs) {
+        List<int> historiqueIdArticles = [];
+
+        historiqueIdArticles.addAll(List<int>.from(docSnapshot.data()!['idArticles']));
+
+        historiqueArticles.add(articles.where((article) => historiqueIdArticles.contains(article.id)).toList());
+      }
+    }
+
+    return historiqueArticles;
   }
 }

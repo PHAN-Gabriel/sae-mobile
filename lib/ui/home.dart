@@ -8,6 +8,7 @@ import '../models/article.dart';
 import 'add_article.dart';
 import 'ecran_panier.dart';
 import 'ecran_favoris.dart';
+import 'page_historique.dart';
 import 'settings.dart';
 import 'ecran_articles.dart';
 
@@ -22,6 +23,7 @@ class _HomeState extends State<Home> {
     EcranArticles(),
     EcranFavoris(),
     EcranPanier(),
+    PageHistorique(),
     EcranSettings(),
   ];
 
@@ -57,12 +59,16 @@ class _HomeState extends State<Home> {
             label: 'Les articles',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.article),
+            icon: Icon(Icons.favorite),
             label: 'Vos favoris',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.article),
+            icon: Icon(Icons.shopping_cart),
             label: 'Votre panier',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.history),
+            label: 'Historique',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
